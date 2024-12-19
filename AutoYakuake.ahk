@@ -17,115 +17,148 @@
 ;========================================================
 
 
+CoordMode, Mouse, Screen
+#SingleInstance Force
 ;=====================Set Variables======================
-RegRead, OutputVar, HKEY_LOCAL_MACHINE, SOFTWARE\Microsoft\Windows\CurrentVersion, ProgramFilesDir (x86)
-PathToConsole = "%OutputVar%\zquake\Console.exe"
+PathToConsole = "wt"
 ;========================================================
 
 ;Speed up drop down animation (default value is 100)
-SetWinDelay, 9
+SetWinDelay, 1
 
 ;Hide tray icon
 #NoTrayIcon
 
 ;Copy paste functionality with the mouse scroller
 copy_paste_button = MButton
-
-WinGetPos, TrayX, TrayY, TrayW, TrayH, ahk_class Shell_TrayWnd
-
-WinWait, ZQuake
-WinMove, ZQuake, , 0, 0
-;WinMove, ZQuake, , 0, 0, A_ScreenWidth
-
-WinGetPos, X, Y, Width, Height, ZQuake
-
+open := 0
 ;========================================================
-;Maximize/Restore functionality with F11 key
-F11::
-
-WinGet MX, MinMax, ZQuake
-If (%MXZ% == 0)
-{
-WinMove ZQuake, , , 0, , Height
-WinWait, ZQuake
-WinMove, ZQuake, , , 0
-MXZ = 1
-}
-Else 
-{
-WinMove ZQuake, , , 0, , A_ScreenHeight - TrayH
-MXZ = 0
-}
-return
-;========================================================
-
-; F12 Key to trigger ZQuake
+goto trigger
+; F12 Key to trigger ahk_exe WindowsTerminal.exe
 F12::
-
+trigger:
 DetectHiddenWindows, on
-IfWinExist ahk_class Console_2_Main
+IfWinExist ahk_exe WindowsTerminal.exe
 {
-	IfWinActive ahk_class Console_2_Main
-	  {
-			;Animate up
-			Gosub MOVEUP
-			WinHide ahk_class Console_2_Main
-			WinActivate ahk_class Shell_TrayWnd
+	positions := checkDisplay()
+	If(open)
+	{
+		open := 0
+		; IfWinNotActive ahk_exe WindowsTerminal.exe
+		If(positions.oldPos.x != positions.newPos.x)
+		{
+			open := 2
 		}
+		MOVEUP(positions.oldPos)
+		WinHide ahk_exe WindowsTerminal.exe
+		WinActivate ahk_class Shell_TrayWnd
+		if(open == 2){
+			open := 0
+			goto trigger
+		}
+	}
 	else
-	  {
-	    WinShow ahk_class Console_2_Main
-	    WinActivate ahk_class Console_2_Main
-	    ;Animate down   
-	    Gosub MOVEDOWN
-	  }
+	{
+		open := 1
+		WinShow ahk_exe WindowsTerminal.exe
+		WinActivate ahk_exe WindowsTerminal.exe
+		MOVEDOWN(positions.newPos)
+	}
 }
 else
-	
+{	
+	open := true
 	Run %PathToConsole%
+	WinWait, ahk_exe WindowsTerminal.exe
+	sleep 200
+	SysGet, ScreenHeight, 79  ; Get screen height
 
+	NewWidth := 1680
+	NewHeight := ScreenHeight // 2  ; Set height to 1/4th of the screen height
+	NewX := (1920 - 1680) / 2  ; Position at the top-left of the screen
+	NewY := 0  ; Position at the top of the screen
+
+	WinMove, ahk_exe WindowsTerminal.exe, , NewX, NewY, NewWidth, NewHeight
+	WinSet, AlwaysOnTop , On, ahk_exe WindowsTerminal.exe
+}
 DetectHiddenWindows, off
 return
 ;========================================================
 
-; hide Console on "F12".
-#IfWinActive ahk_class Console_2_Main
-F12::
+checkDisplay()
 {
-	;Animate up
-        Gosub MOVEUP
-   	WinHide ahk_class Console_2_Main
-   	WinActivate ahk_class Shell_TrayWnd
+	returnVal := {}
+	MouseGetPos, MouseX, MouseY
+	SysGet, MonitorCount, MonitorCount
+
+	MonitorNum := ""
+	Loop, %MonitorCount%
+	{
+		SysGet, Monitor, Monitor, %A_Index%
+
+		if (MouseX >= MonitorLeft and MouseX <= MonitorRight and MouseY >= MonitorTop and MouseY <= MonitorBottom)
+		{
+			MonitorNum := A_Index
+			break
+		}
+	}
+
+	if (MonitorNum = "")
+	{
+		MsgBox, Error: Could not determine the monitor containing the mouse.
+		Return
+	}
+
+	WinGet, TerminalWinID, ID, ahk_exe WindowsTerminal.exe
+	if (!TerminalWinID)
+	{
+		MsgBox, Error: WindowsTerminal.exe window not found.
+		Return
+	}
+	
+	WinGetPos, WinX, WinY, WinWidth, WinHeight, ahk_exe WindowsTerminal.exe	
+	SysGet, TargetMonitor, Monitor, %MonitorNum%
+
+
+	NewX := TargetMonitorLeft + ((1920 - 1680) / 2)
+	NewY := 0
+	
+	returnVal.newPos := {x:NewX, y:NewY}
+	returnVal.oldPos := {x:WinX, y:WinY}
+	return returnVal
 }
-return
-;========================================================
+
+
+; RCtrl::Reload
+; Launch_App2::Suspend
+; RShift::ExitApp
+
 
 ;Animation Presets
-MOVEDOWN:
-WinMove, , , , -500
-WinMove, , , , -450
-WinMove, , , , -400
-WinMove, , , , -350
-WinMove, , , , -300
-WinMove, , , , -250 
-WinMove, , , , -200 
-WinMove, , , , -150 
-WinMove, , , , -100 
-WinMove, , , , -050 
-WinMove, , , ,  000 
-Return
+MOVEDOWN(position){
+	WinMove, position.x , -500
+	WinMove, position.x , -450
+	WinMove, position.x , -400
+	WinMove, position.x , -350
+	WinMove, position.x , -300
+	WinMove, position.x , -250 
+	WinMove, position.x , -200 
+	WinMove, position.x , -150 
+	WinMove, position.x , -100 
+	WinMove, position.x , -050 
+	WinMove, position.x , -000 
+}
 
-MOVEUP:
-WinMove, , , , -000 
-WinMove, , , , -050 
-WinMove, , , , -100 
-WinMove, , , , -150 
-WinMove, , , , -200 
-WinMove, , , , -250 
-WinMove, , , , -300 
-WinMove, , , , -350 
-WinMove, , , , -400 
-WinMove, , , , -450 
-WinMove, , , , -500 
-Return
-
+MOVEUP(position){
+	WinMove, position.x , -000 
+	WinMove, position.x , -050 
+	WinMove, position.x , -100 
+	WinMove, position.x , -150 
+	WinMove, position.x , -200 
+	WinMove, position.x , -250 
+	WinMove, position.x , -300 
+	WinMove, position.x , -350 
+	WinMove, position.x , -400 
+	WinMove, position.x , -450 
+	WinMove, position.x , -500 
+}
