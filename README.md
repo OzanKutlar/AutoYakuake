@@ -1,72 +1,57 @@
-# ZQuake
-#####ZQuake is a Drop-down console window with OpenSSH integrated for Windows.
->Yakuake-like convenience for the sad times you are forced to use Windows.
+# AutoYakuake
 
-ZQuake is simply a combination of 3 awesome open source tools.
- - [Console2]
- - [AutoHotKey]
- - [OpenSSH for Windows]
+#####AutoYakuake is a Drop-down console window with Windows Terminal integration for Windows.  
+>Yakuake-like convenience for the times you are using Windows.
 
-#####Console
->Console is a Windows console window enhancement. Console features include: multiple tabs, text editor-like text selection, different background types, alpha and color-key transparency, configurable font, different window styles
+AutoYakuake is a fork of ZQuake, updated to use the modern **Windows Terminal** instead of OpenSSH and Console2.
 
-#####AutoHotKey
->AutoHotkey - a scripting language for desktop automation
+---
 
-#####OpenSSH for Windows
->OpenSSH for Windows An installer for a minimal installation of the Cygwin environment suitable for running an OpenSSH server on the Windows platform.
+### Key Features
+- **Windows Terminal Integration**: Replaces Console2 with the versatile Windows Terminal.
+- **AutoHotkey**: A scripting language for desktop automation, enabling the drop-down functionality.
+- **Simplified Setup**: Automatically centers and configures Windows Terminal on launch.
 
-##How To Use
-1. Install AutoHotKey
-2. Compile the 'ZQuake_source.ahk' scripting
-3. Install Console
-4. Install OpenSSH
-5. It is recommended to copy OpenSSH directory in Console install directory 
-6. Overwrite the console.xml with the one given here (or write your own configurization :) )
-7. Copy the compiled 'ZQuake_source.ahk' in Console directory
-8. Recommended to place a shortcut for 'ZQuake.exe' in your startup folder to start on boot
+---
 
-##Example directory Setup
->-rwxr-xr-x 1 Console.exe <br />
->-rwxr-xr-x 1 ConsoleHook.dll <br />
->-rwxr-xr-x 1 FreeImage.dll <br />
->-rwxr-xr-x 1 FreeImagePlus.dll <br />
->-rw-r--r-- 1 GPLv2.txt <br />
->drwxr-xr-x 1 OpenSSH/ <br />
->-rwxr-xr-x 1 ZQuake.exe <br />
->-rw-r--r-- 1 ZQuake_source.ahk <br />
->-rw-r--r-- 1 console.chm <br />
->-rw-r--r-- 1 console.xml <br />
->-rw-r--r-- 1 ico_sys_command.ico <br />
+## How To Use
+
+1. **Install AutoHotkey** (v1).  
+   Download it from the [AutoHotkey website](https://www.autohotkey.com/).
+2. **Compile the `AutoYakuake_source.ahk` script** or use the precompiled executable.  
+   - To compile, use the "Convert .ahk to .exe" utility provided by AutoHotkey.
+3. **Install Windows Terminal**.  
+   Download it from the [Microsoft Store](https://aka.ms/terminal) or the [Windows Terminal GitHub page](https://github.com/microsoft/terminal).
+4. Copy the compiled `AutoYakuake_source.ahk` (or `AutoYakuake.exe`) to a preferred location.
+5. Place a shortcut to `AutoYakuake.exe` in your startup folder to launch on boot.  
+
+---
+
+## Example Directory Setup
+```
+-rwxr-xr-x 1 AutoYakuake.ahk  
+```
+
+---
+
+## Usage - Hot Keys
+- **F12**: Trigger AutoYakuake (Drop-down, Move-up).
 
 
-##Usage - Hot Keys
-  * F12: Trigger ZQuake, Drop-down, Move-up.
-  * F11: Toggle fullscreen.
-  * Ctrl + Shift + T: New Tab.
-  * Ctrl + Shift + Q: Exit Tab.
-  * Ctrl + Right Arrow: Next Tab.
-  * Ctrl + Left Arrow: Previous Tab.
-  * Ctrl + Shift + C: Copy.
-  * Ctrl + Shift + V: Paste
-  * Mouse Scroller Button: Copy/Paste.
+---
 
-###Notes 
-  * The ZQuake.exe is placed to the startup folder, to start on Windows boot automaticaly.
-  * OpenSSH runs only from the starting directory of the Console. If you need to run it globally, you should place the the OpenSSH binary files in the Windows/system/ directory and change the settings in the console2 xml config file.
+### Notes
+- **Auto Start**: Place the `AutoYakuake.ahk` shortcut in the Windows startup folder to launch automatically.  
 
-##Version
-[1.0.0]
+---
 
-##Licence
-GPLv3
+## Version
+[2.0.0]
 
+---
+
+## License
+**GPLv3**  
 >Copyright (C) 2016  Zantalis Fotios
 
-
-
-
-
-[console2]:http://sourceforge.net/projects/console/
-[autohotkey]:http://www.autohotkey.com/
-[openssh for windows]:http://sourceforge.net/projects/sshwindows/
+---
